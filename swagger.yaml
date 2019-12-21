@@ -1,0 +1,74 @@
+swagger: "2.0"
+info:
+  description: "agricola api backend"
+  version: "1.0.0"
+  title: "Agricola Server"
+paths:
+  /game/{game_id}:
+    post:
+      description: "post action to agricola game"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "game_id"
+        in: "path"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Dummy"
+      responses:
+        405:
+          description: "Invalid input"
+    get:
+      description: "get info of agricola game"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "game_id"
+        in: "path"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Dummy"
+      responses:
+        405:
+          description: "Invalid input"
+  /game:
+    post:
+      description: "create new game"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Dummy"
+      responses:
+        405:
+          description: "Invalid input"
+    get:
+      description: "search agricola games"
+      produces:
+      - "application/json"
+      responses:
+        405:
+          description: "Invalid input"
+   
+definitions:
+  Dummy:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
