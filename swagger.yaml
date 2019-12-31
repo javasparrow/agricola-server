@@ -53,7 +53,7 @@ paths:
         name: "body"
         required: true
         schema:
-          $ref: "#/definitions/Dummy"
+          $ref: "#/definitions/CreateGame"
       responses:
         405:
           description: "Invalid input"
@@ -66,6 +66,24 @@ paths:
           description: "Invalid input"
    
 definitions:
+  CreateGame:
+    type: "object"
+    properties:
+      players:
+        type: "array"
+        items:
+          $ref: "#/definitions/Player"
+  
+  Player:
+    type: "object"
+    properties:
+      player_type:
+        type: "string"
+        enum: [human, ai]
+      agent_name:
+        type: "string"
+        description: "player_typeでaiが指定された時のみ参照"
+  
   Dummy:
     type: "object"
     properties:
