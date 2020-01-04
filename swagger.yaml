@@ -7,6 +7,7 @@ paths:
   /game/{game_id}:
     post:
       description: "post action to agricola game"
+      summary: "post action to agricola game"
       consumes:
       - "application/json"
       produces:
@@ -26,6 +27,7 @@ paths:
           description: "Invalid input"
     get:
       description: "get info of agricola game"
+      summary: "get info of agricola game"
       produces:
       - "application/json"
       parameters:
@@ -39,6 +41,7 @@ paths:
   /game/history/{game_id}:
     get:
       description: "get history of agricola game"
+      summary: "get history of agricola game"
       produces:
       - "application/json"
       parameters:
@@ -52,6 +55,7 @@ paths:
   /game:
     post:
       description: "create new game"
+      summary: "create new game"
       consumes:
       - "application/json"
       produces:
@@ -67,6 +71,7 @@ paths:
           description: "Invalid input"
     get:
       description: "search agricola games"
+      summary: "search agricola games"
       produces:
       - "application/json"
       responses:
