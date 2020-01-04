@@ -8,6 +8,7 @@ app = Flask(__name__)
 LOG_DIR = "./logs"
 ELASTICSEARCH_ENDPOINT = "https://search-agricola-games-l7ju4eul22s6c4n44sltpq4v6m.ap-northeast-1.es.amazonaws.com"
 GAME_INDEX_NAME = "games"
+GAME_HISTORY_INDEX_NAME = "game_histories"
 
 @app.route("/", methods=['GET'])
 def hello():
@@ -30,6 +31,13 @@ def getGame(game_id=None):
     res = client.get(index=GAME_INDEX_NAME, doc_type="_all", id=game_id)
     return jsonify(res["_source"]["next_input"])
 
+# return history of specified agricola game
+@app.route('/game/history/<game_id>', methods=['GET'])
+def getGameHistory(game_id=None):
+    client = elasticsearch.Elasticsearch(ELASTICSEARCH_ENDPOINT, use_ssl=False, verify_certs=False)
+    res = client.search(index=GAME_HISTORY_INDEX_NAME, size=1000, body={"query": {"match": {"game.game_id":game_id}}})
+    return jsonify([hit["_source"]["next_input"] for hit in res["hits"]["hits"]])
+
 @app.route('/game/<game_id>', methods=['POST'])
 def postGameAction(game_id=None):
     client = elasticsearch.Elasticsearch(ELASTICSEARCH_ENDPOINT, use_ssl=False, verify_certs=False)
@@ -38,11 +46,21 @@ def postGameAction(game_id=None):
     game = StandardAgricolaGame(4, game_id)
     ui = TextInterface()
     next_state, next_input = play(game, ui, None, LOG_DIR, json.dumps(res["_source"]["game"]), step_execution=True, next_choice_output=request.get_data())
+    
+    # Save latest game data
     save_data = {
         "game": json.loads(next_state),
         "next_input": json.loads(next_input),
     }
     client.index(index=GAME_INDEX_NAME, doc_type='_doc', id=game_id, body=save_data)
+
+    # Save history data
+    res["_source"]["next_input"]["player_output"] = json.loads(request.get_data())
+    save_history_data = {
+        "game": res["_source"]["game"],
+        "next_input": res["_source"]["next_input"],
+    }
+    client.index(index=GAME_HISTORY_INDEX_NAME, doc_type='_doc', id="%s-%d" % (game_id, res["_source"]["next_input"]["current_step_idx"]), body=save_history_data)
 
     result = {
       "Content-Type": "application/json",

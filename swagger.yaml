@@ -33,11 +33,19 @@ paths:
         in: "path"
         required: true
         type: "string"
-      - in: "body"
-        name: "body"
+      responses:
+        405:
+          description: "Invalid input"
+  /game/history/{game_id}:
+    get:
+      description: "get history of agricola game"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "game_id"
+        in: "path"
         required: true
-        schema:
-          $ref: "#/definitions/Dummy"
+        type: "string"
       responses:
         405:
           description: "Invalid input"
