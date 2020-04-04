@@ -45,6 +45,9 @@ def postGameAction(game_id=None):
     
     game = StandardAgricolaGame(4, game_id)
     ui = TextInterface()
+
+    print("input is:" + request.get_data())
+
     next_state, next_input = play(game, ui, None, LOG_DIR, json.dumps(res["_source"]["game"]), step_execution=True, next_choice_output=request.get_data())
     
     # Save latest game data
