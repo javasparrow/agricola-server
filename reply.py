@@ -103,7 +103,7 @@ def createNewGame():
 def searchAgricolaGame():
 
     client = elasticsearch.Elasticsearch(ELASTICSEARCH_ENDPOINT, use_ssl=False, verify_certs=False)
-    res = client.search(index=GAME_HISTORY_INDEX_NAME, size=10, body={"sort": {"idx": {"order":"desc"}}})
+    res = client.search(index=GAME_INDEX_NAME, size=10, body={"sort": {"timestamp": {"order":"desc"}}})
     return jsonify([hit["_source"]["next_input"] for hit in res["hits"]["hits"]])
 
 if __name__ == "__main__":
