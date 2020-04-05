@@ -99,5 +99,12 @@ def createNewGame():
     # return answer
     return jsonify(result)
 
+@app.route('/game', methods=['GET'])
+def searchAgricolaGame():
+
+    client = elasticsearch.Elasticsearch(ELASTICSEARCH_ENDPOINT, use_ssl=False, verify_certs=False)
+    res = client.search(index=GAME_HISTORY_INDEX_NAME, size=10, body={"sort": {"idx": {"order":"desc"}}})
+    return jsonify([hit["_source"]["next_input"] for hit in res["hits"]["hits"]])
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0',port=5000,debug=True)
